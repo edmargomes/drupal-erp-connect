@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use erp\TinyERPService;
+use tiny\TinyERPService;
 
 /**
  * Implements hook_help().
@@ -22,4 +22,57 @@ function erp_connect_help($route_name, RouteMatchInterface $route_match) {
 
     default:
   }
+}
+
+/**
+ * Implements hook_user_insert user().
+ */
+function erp_connect_user_insert($account) {
+  $tinyERP = new TinyERPService(\Drupal\Core\Config\Config::get('tiny_token'));
+
+  $contact = '{
+  "contatos": [
+    {
+      "contato": {
+        "sequencia": "1",
+        "codigo": "1235",
+        "nome": "Contato Teste 2",
+        "tipo_pessoa": "F",
+        "cpf_cnpj": "22755777850",
+        "ie": "",
+        "rg": "1234567890",
+        "im": "",
+        "tipos_contato": [{
+          "tipo": "Cliente"
+        }],
+        "tipo_negocio": "",
+        "endereco": "Rua Teste",
+        "numero": "123",
+        "complemento": "sala 2",
+        "bairro": "Teste",
+        "cep": "95700-000",
+        "cidade": "Bento Gonçalves",
+        "uf": "RS",
+        "pais": "",
+        "contatos": "Contato Teste",
+        "fone": "(54) 3055 3808",
+        "fax": "",
+        "celular": "",
+        "email": "teste@teste.com.br",
+        "situacao": "A",
+        "obs": "teste de obs"
+      }
+    }
+  ]
+}';
+
+  $tinyERP->createContact($contact);
+
+}
+
+/**
+ * Implements hook_user_update user().
+ */
+function erp_connect_user_update($account) {
+  $tinyERP = new TinyERPService();
 }
