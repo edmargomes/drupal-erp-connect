@@ -10,14 +10,24 @@ namespace tiny;
 
 use Drupal\Core\Site\Settings;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\simpletest\Unit\WebTestBaseTest;
 use tiny\TinyERPService;
 
-class TinyERPServiceTest extends WebTestBase {
+class TinyERPServiceTest extends KernelTestBase {
 
-  public function testTokenSetup() {
-    print_r(Settings::get('tiny_token'));
-    $this->assertNotNull(Settings::get('tiny_token'));
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp() {
+        global $settings;
+        parent::setUp();
+        print_r($this->config('tiny_token'));
+    }
+
+    public function testTokenSetup() {
+
+    //print_r($settings);
+    //$this->assertNotNull(Settings::get('tiny_token'));
   }
 
   public function testCreateContact() {

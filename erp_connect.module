@@ -6,7 +6,8 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use tiny\TinyERPService;
+use Drupal\erp_connect\tiny\TinyERPService;
+use Drupal\Core\Site\Settings;
 
 /**
  * Implements hook_help().
@@ -28,9 +29,61 @@ function erp_connect_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_user_insert user().
  */
 function erp_connect_user_insert($account) {
-  $tinyERP = new TinyERPService(\Drupal\Core\Config\Config::get('tiny_token'));
+    $tinySettings = Settings::get('tiny');
+    $tinyERP = new TinyERPService($tinySettings['token']);
 
   $contact = '{
+  "contatos": [
+    {
+      "contato": {
+        "sequencia": "' . $account->get('uid')->value .'",
+        "codigo": "' . $account->get('uuid')->value .'",
+        "nome": "' . $account->get('name')->value .'",
+        "tipo_pessoa": "F",
+        "cpf_cnpj": "22755777850",
+        "ie": "",
+        "rg": "1234567890",
+        "im": "",
+        "tipos_contato": [{
+          "tipo": "Cliente"
+        }],
+        "tipo_negocio": "",
+        "endereco": "Rua Teste",
+        "numero": "123",
+        "complemento": "sala 2",
+        "bairro": "Teste",
+        "cep": "95700-000",
+        "cidade": "Bento Gonçalves",
+        "uf": "RS",
+        "pais": "",
+        "contatos": "Contato Teste",
+        "fone": "(54) 3055 3808",
+        "fax": "",
+        "celular": "",
+        "email": "teste@teste.com.br",
+        "situacao": "A",
+        "obs": "teste de obs"
+      }
+    }
+  ]
+}';
+
+  try {
+      $tinyERP->createContact($contact);
+  }
+  catch (\Exception $ex) {
+      watchdog_exception('erp_connet',$ex);
+  }
+}
+
+/**
+ * Implements hook_user_update user().
+ */
+function erp_connect_user_update($account) {
+    $tinySettings = Settings::get('tiny');
+    $tinyERP = new TinyERPService($tinySettings['token']);
+
+    $contact = '{
   "contatos": [
     {
       "contato": {
@@ -66,13 +119,5 @@ function erp_connect_user_insert($account) {
   ]
 }';
 
-  $tinyERP->createContact($contact);
-
-}
-
-/**
- * Implements hook_user_update user().
- */
-function erp_connect_user_update($account) {
-  $tinyERP = new TinyERPService();
+    $tinyERP->createContact($contact);
 }

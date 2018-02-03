@@ -31,9 +31,8 @@ $settings['tiny'] = [
   'fields' => [
     'field_user_cnpj' => 'cpf_cnpj',
     'field_user_cpf' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
   ],
-  'rules' => [
+  'roles' => [
     'authentication user' => 'Cliente',
     'provider' => 'Fornecedor',
   ]
@@ -42,7 +41,7 @@ $settings['tiny'] = [
 
 Example docker-compose to test.
 
-```ansible
+```docker-compose
 version: "3"
 
 services:
