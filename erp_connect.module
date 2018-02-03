@@ -32,41 +32,59 @@ function erp_connect_user_insert($account) {
     $tinySettings = Settings::get('tiny');
     $tinyERP = new TinyERPService($tinySettings['token']);
 
-  $contact = '{
-  "contatos": [
-    {
-      "contato": {
-        "sequencia": "' . $account->get('uid')->value .'",
-        "codigo": "' . $account->get('uuid')->value .'",
-        "nome": "' . $account->get('name')->value .'",
-        "tipo_pessoa": "F",
-        "cpf_cnpj": "22755777850",
-        "ie": "",
-        "rg": "1234567890",
-        "im": "",
-        "tipos_contato": [{
-          "tipo": "Cliente"
-        }],
-        "tipo_negocio": "",
-        "endereco": "Rua Teste",
-        "numero": "123",
-        "complemento": "sala 2",
-        "bairro": "Teste",
-        "cep": "95700-000",
-        "cidade": "Bento Gonçalves",
-        "uf": "RS",
-        "pais": "",
-        "contatos": "Contato Teste",
-        "fone": "(54) 3055 3808",
-        "fax": "",
-        "celular": "",
-        "email": "teste@teste.com.br",
-        "situacao": "A",
-        "obs": "teste de obs"
-      }
+
+    $contact = new StdClass();
+    $contact->sequencia = $account->get('uid')->value;
+    $contact->codigo = $account->get('uuid')->value;
+    $contact->nome = $account->get('name')->value;
+
+    foreach ($tinySettings['fields'] as $fieldName => $field) {
+      $contact->$field = $account->get($fieldName)->value;
     }
-  ]
-}';
+
+    $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
+
+    $contacts = '{
+      "contatos": [
+      {
+          "contato": ' . json_encode($contact) . '
+      }]
+    }';
+//  $contacts = '{
+//  "contatos": [
+//    {
+//      "contato": {
+//        "sequencia": "' . $account->get('uid')->value .'",
+//        "codigo": "' . $account->get('uuid')->value .'",
+//        "nome": "' . $account->get('name')->value .'",
+//        "tipo_pessoa": "F",
+//        "cpf_cnpj": "08215202616",
+//        "ie": "",
+//        "rg": "1234567890",
+//        "im": "",
+//        "tipos_contato": [{
+//          "tipo": "Cliente"
+//        }],
+//        "tipo_negocio": "",
+//        "endereco": "Rua Teste",
+//        "numero": "123",
+//        "complemento": "sala 2",
+//        "bairro": "Teste",
+//        "cep": "95700-000",
+//        "cidade": "Bento Gonçalves",
+//        "uf": "RS",
+//        "pais": "",
+//        "contatos": "Contato Teste",
+//        "fone": "(54) 3055 3808",
+//        "fax": "",
+//        "celular": "",
+//        "email": "teste@teste.com.br",
+//        "situacao": "A",
+//        "obs": "teste de obs"
+//      }
+//    }
+//  ]
+//}';
 
   try {
       $tinyERP->createContact($contact);
