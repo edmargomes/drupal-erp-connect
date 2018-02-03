@@ -32,7 +32,6 @@ function erp_connect_user_insert($account) {
     $tinySettings = Settings::get('tiny');
     $tinyERP = new TinyERPService($tinySettings['token']);
 
-
     $contact = new StdClass();
     $contact->sequencia = $account->get('uid')->value;
     $contact->codigo = $account->get('uuid')->value;
@@ -43,6 +42,8 @@ function erp_connect_user_insert($account) {
     }
 
     $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
+    $contact->email = $account->get('mail')->value;
+    $contact->situacao = 'A';
 
     $contacts = '{
       "contatos": [
@@ -87,7 +88,7 @@ function erp_connect_user_insert($account) {
 //}';
 
   try {
-      $tinyERP->createContact($contact);
+      $tinyERP->createContact($contacts);
   }
   catch (\Exception $ex) {
       watchdog_exception('erp_connet',$ex);
