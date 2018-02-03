@@ -16,9 +16,8 @@ $settings['tiny'] = [
 $settings['tiny'] = [
   'token' => 'your_token',
   'fields' => [
-    'field_user_cnpj' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
   ]
 ];
 ```
