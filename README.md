@@ -16,9 +16,9 @@ $settings['tiny'] = [
 $settings['tiny'] = [
   'token' => 'your_token',
   'fields' => [
-      'field_cnpj' => 'cpf_cnpj',
-      'field_cpf' => 'cpf_cnpj',
-  ],
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+  ]
 ];
 ```
 Tiny fields reference: https://erp.tiny.com.br/help?p=api2-contatos-incluir
