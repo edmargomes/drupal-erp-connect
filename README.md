@@ -61,8 +61,8 @@ $settings['tiny'] = [
     'provider' => 'Fornecedor',
   ],
   'product_fields' => [
-    'field_cnpj' => 'cpf_cnpj',
-    'field_cpf' => 'cpf_cnpj',
+    'body' => 'descricao_complementar',
+    'field_EAN' => 'gtin',
   ],
 ];
 

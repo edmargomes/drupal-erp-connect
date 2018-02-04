@@ -13,6 +13,7 @@ class TinyERPService {
   private $token = '';
   const CONTACT_CREATE_URL = 'https://api.tiny.com.br/api2/contato.incluir.php';
   const PRODUCT_CREATE_URL = 'https://api.tiny.com.br/api2/produto.incluir.php';
+  const PRODUCT_UPDATE_URL = 'https://api.tiny.com.br/api2/produto.alterar.php';
 
   public function __construct($token) {
     $this->token = $token;
@@ -104,5 +105,11 @@ class TinyERPService {
     $data = "token=$this->token&produto=$product&formato=JSON";
 
     return $this->callApi(self::PRODUCT_CREATE_URL, $data);
+  }
+
+  public function updateProduct($product) {
+    $data = "token=$this->token&produto=$product&formato=JSON";
+
+    return $this->callApi(self::PRODUCT_UPDATE_URL, $data);
   }
 }

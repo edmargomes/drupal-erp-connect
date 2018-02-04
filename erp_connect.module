@@ -9,6 +9,8 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\erp_connect\tiny\TinyERPService;
 use Drupal\Core\Site\Settings;
 use Drupal\commerce_product\Entity\ProductVariationInterface;
+use Drupal\commerce_product\Entity\ProductInterface;
+use Drupal\commerce_product\Entity\Product;
 
 /**
  * Implements hook_help().
@@ -37,8 +39,11 @@ function erp_connect_user_insert($account) {
   $contact->sequencia = $account->get('uid')->value;
   $contact->codigo = $account->get('uuid')->value;
   $contact->nome = $account->get('name')->value;
+  $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
+  $contact->email = $account->get('mail')->value;
+  $contact->situacao = 'A';
 
-  foreach ($tinySettings['fields'] as $fieldName => $field) {
+  foreach ($tinySettings['user_fields'] as $fieldName => $field) {
     if ($account->get($fieldName)->value != "") {
       $contact->$field = $account->get($fieldName)->value;
     }
@@ -54,22 +59,18 @@ function erp_connect_user_insert($account) {
     }
   }
 
-  $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
-  $contact->email = $account->get('mail')->value;
-  $contact->situacao = 'A';
-
-    $contacts = '{
-      "contatos": [
-      {
-          "contato": ' . json_encode($contact) . '
-      }]
-    }';
+  $contacts = '{
+    "contatos": [
+    {
+        "contato": ' . json_encode($contact) . '
+    }]
+  }';
 
   try {
       $tinyERP->createContact($contacts);
   }
   catch (\Exception $ex) {
-      watchdog_exception('erp_connet',$ex);
+      watchdog_exception('erp_connect',$ex);
   }
 }
 
@@ -123,10 +124,46 @@ function erp_connect_user_update($account) {
 /**
  * Implements hook_ENTITY_TYPE_insert to get add product.
  */
-
-function erp_connect_commerce_product_variation_type_insert(ProductVariationInterface $productVariation) {
+function erp_connect_commerce_product_variation_insert(ProductVariationInterface $productVariation) {
   $tinySettings = Settings::get('tiny');
   $tinyERP = new TinyERPService($tinySettings['token']);
-  //$products
-  //$tinyERP->createProduct($products);
+
+  $product = new StdClass();
+  $product->sequencia = $productVariation->get('variation_id')->value;
+  $product->codigo = $productVariation->getSku();
+  $product->nome = $productVariation->getTitle();
+  $product->unidade = 'Pç';
+  $product->preco = $productVariation->getPrice()->getNumber();
+  $product->origem = '0';
+  $product->situacao = 'A';
+  $product->tipo = 'P';
+
+  $products = '{
+    "produtos": [
+    {
+        "produto": ' . json_encode($product) . '
+    }]
+  }';
+
+  try {
+    $response = $tinyERP->createProduct($products);
+  }
+  catch (\Exception $ex) {
+    watchdog_exception('erp_connect',$ex);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert to get add product.
+ */
+function erp_connect_commerce_product_insert(ProductInterface $product) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+
+  foreach ($tinySettings['product_fields'] as $fieldName => $fieldERP) {
+    $field = $product->getProduct()->get($fieldName);
+    if ($field && $field->value != "") {
+      $product->$fieldERP = $field->value;
+    }
+  }
 }
