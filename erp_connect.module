@@ -8,6 +8,7 @@
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\erp_connect\tiny\TinyERPService;
 use Drupal\Core\Site\Settings;
+use Drupal\commerce_product\Entity\ProductVariationInterface;
 
 /**
  * Implements hook_help().
@@ -116,4 +117,16 @@ function erp_connect_user_update($account) {
 }';
 
     $tinyERP->createContact($contact);
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_insert to get add product.
+ */
+
+function erp_connect_commerce_product_variation_type_insert(ProductVariationInterface $productVariation) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+  //$products
+  //$tinyERP->createProduct($products);
 }

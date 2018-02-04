@@ -1,5 +1,5 @@
 # drupal-erp-connect
-ERPs Integration for Drupal, starting with Tiny ERP
+ERPs Integration for Drupal 8 commerce, starting with Tiny ERP
 
 ## Setup
 1 - Clone this repository with folder's name erp_connect in your modules folder.
@@ -11,23 +11,29 @@ $settings['tiny'] = [
 ];
 ```
 
-3 - Added from-to table settings to get value in the field and send to TinyERP
+3 - Add from-to table settings to get field user value and send to TinyERP: 
+`'drupal-field' => 'tiny-field'`
+
+Example
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
-  'fields' => [
+  'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',
-  ]
+  ],
 ];
 ```
 Tiny fields reference: https://erp.tiny.com.br/help?p=api2-contatos-incluir
 
-4 - Added from-to table settings to get value roles and send to TinyERP like contact type
+4 - Add from-to table settings to get roles value and send to TinyERP like contact type: 
+`'drupal-role' => 'tiny-type'`
+
+Example
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
-  'fields' => [
+  'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',
   ],
@@ -39,7 +45,30 @@ $settings['tiny'] = [
 
 ```
 
-Example docker-compose to test.
+5 - Add from-to table settings to get field product value and send to TinyERP
+`'drupal-field' => 'tiny-field'`
+
+Example
+```
+$settings['tiny'] = [
+  'token' => 'your_token',
+  'user_fields' => [
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+  ],
+  'roles' => [
+    'client' => 'Cliente',
+    'provider' => 'Fornecedor',
+  ],
+  'product_fields' => [
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+  ],
+];
+
+```
+
+###Example docker-compose to test.
 
 ```docker-compose
 version: "3"
