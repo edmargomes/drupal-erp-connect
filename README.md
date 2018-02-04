@@ -16,27 +16,27 @@ $settings['tiny'] = [
 $settings['tiny'] = [
   'token' => 'your_token',
   'fields' => [
-    'field_user_cnpj' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
-  ]
+      'field_cnpj' => 'cpf_cnpj',
+      'field_cpf' => 'cpf_cnpj',
+  ],
 ];
 ```
 Tiny fields reference: https://erp.tiny.com.br/help?p=api2-contatos-incluir
 
-4 - Added from-to table settings to get value rule and send to TinyERP like contact type
+4 - Added from-to table settings to get value roles and send to TinyERP like contact type
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
   'fields' => [
-    'field_user_cnpj' => 'cpf_cnpj',
-    'field_user_cpf' => 'cpf_cnpj',
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
   ],
   'roles' => [
-    'authentication user' => 'Cliente',
+    'client' => 'Cliente',
     'provider' => 'Fornecedor',
   ]
 ];
+
 ```
 
 Example docker-compose to test.
