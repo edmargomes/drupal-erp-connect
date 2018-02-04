@@ -1,6 +1,10 @@
 name: ERP Connect
 type: module
 description: Module to integrate Drupal with ERPs.
+dependencies:
+  - commerce
+  - commerce_product
+  - cart
 core: 8.x
 package: ERP
 
