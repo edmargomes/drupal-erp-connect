@@ -29,7 +29,7 @@ function erp_connect_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_user_presave user().
+ * Implements hook_user_insert user().
  */
 function erp_connect_user_insert(UserInterface $account) {
   $tinySettings = Settings::get('tiny');
@@ -81,7 +81,7 @@ function erp_connect_user_update($account) {
 
 
 /**
- * Implements hook_ENTITY_TYPE_insert to get add product.
+ * Implements hook_ENTITY_TYPE_insert to add product.
  */
 function erp_connect_commerce_product_insert(ProductInterface $product) {
   $tinySettings = Settings::get('tiny');
@@ -105,7 +105,48 @@ function erp_connect_commerce_product_insert(ProductInterface $product) {
   try {
     if (count($products->produtos)) {
       $response = $tinyERP->createProduct(json_encode($products));
-      DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_product\Entity\Product::class);
+      DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_product\Entity\ProductVariation::class);
+    }
+  }
+  catch (\Exception $ex) {
+    watchdog_exception('erp_connect',$ex);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update to update product.
+ */
+function erp_connect_commerce_product_update(ProductInterface $product) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+
+  $productsUpdate = new StdClass();
+  $productsUpdate->produtos = [];
+  $products = new StdClass();
+  $products->produtos = [];
+  foreach ($tinySettings['product_fields'] as $fieldName => $fieldERP) {
+    foreach ($product->getVariations() as $variation) {
+      $productVariation = DrupalToTiny::productToProductTiny($variation, $tinySettings);
+      $field = $product->get($fieldName);
+      if ($field && $field->value != "") {
+        $productVariation->$fieldERP = $field->value;
+      }
+      $productElement = new StdClass();
+      $productElement->produto = $productVariation;
+      if ($productVariation->id)
+        $productsUpdate->produtos[] = $productElement;
+      else
+        $products->produtos[] = $productElement;
+    }
+  }
+
+  try {
+    if (count($productsUpdate->produtos)) {
+      $response = $tinyERP->updateProduct(json_encode($productsUpdate));
+    }
+    if (count($products->produtos)) {
+      $response = $tinyERP->createProduct(json_encode($products));
+      DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_product\Entity\ProductVariation::class);
     }
   }
   catch (\Exception $ex) {
