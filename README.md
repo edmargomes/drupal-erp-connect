@@ -4,10 +4,12 @@ ERPs Integration for Drupal 8 commerce, starting with Tiny ERP
 ## Setup
 1 - Clone this repository with folder's name erp_connect in your modules folder.
 
-2 - Added your tiny token in settings file
+2 - Added your tiny token in settings file and 
+field to use to save tiny id information for your entities. If you haven't tiny_id field, you need create like integer and add in the user profile and variations products.
 ```
 $settings['tiny'] = [
-  'token' => 'your_token'
+  'token' => 'your_token',
+  'erp_id' => 'field_tiny_id',
 ];
 ```
 
@@ -18,6 +20,7 @@ Example
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
+  'erp_id' => 'field_tiny_id',
   'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',
@@ -33,6 +36,7 @@ Example
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
+  'erp_id' => 'field_tiny_id',
   'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',
@@ -52,6 +56,7 @@ Example
 ```
 $settings['tiny'] = [
   'token' => 'your_token',
+  'erp_id' => 'field_tiny_id',
   'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',

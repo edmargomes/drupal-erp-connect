@@ -12,6 +12,7 @@ class TinyERPService {
 
   private $token = '';
   const CONTACT_CREATE_URL = 'https://api.tiny.com.br/api2/contato.incluir.php';
+  const CONTACT_UPDATE_URL = 'https://api.tiny.com.br/api2/contato.alterar.php';
   const PRODUCT_CREATE_URL = 'https://api.tiny.com.br/api2/produto.incluir.php';
   const PRODUCT_UPDATE_URL = 'https://api.tiny.com.br/api2/produto.alterar.php';
 
@@ -92,6 +93,13 @@ class TinyERPService {
     $data = "token=$this->token&contato=$contact&formato=JSON";
 
     return $this->callApi(self::CONTACT_CREATE_URL, $data);
+  }
+
+  public function updateContact($contact) {
+
+    $data = "token=$this->token&contato=$contact&formato=JSON";
+
+    return $this->callApi(self::CONTACT_UPDATE_URL, $data);
   }
 
 
