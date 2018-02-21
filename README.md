@@ -13,7 +13,7 @@ $settings['tiny'] = [
 ];
 ```
 
-3 - Add from-to table settings to get field user value and send to TinyERP: 
+3 - Add from-to table settings to get field user profile value and send to TinyERP: 
 `'drupal-field' => 'tiny-field'`
 
 Example

@@ -34,11 +34,11 @@ class DrupalToTiny
     $contact = new \StdClass();
     $contact->sequencia = $account->id();
     $contact->codigo = $account->uuid();
-    $contact->nome = $account->getAccountName();
+    $contact->nome = $account->address;
     $contact->email = $account->getEmail();
     $contact->situacao = 'A';
 
-    foreach ($tinySettings['user_fields'] as $fieldName => $field) {
+    foreach ($tinySettings['profile_fields'] as $fieldName => $field) {
       if ($account->get($fieldName)->value != "") {
         $contact->$field = $account->get($fieldName)->value;
       }
@@ -50,7 +50,7 @@ class DrupalToTiny
     foreach ($account->getRoles() as $key => $type) {
       if ($tinySettings['roles'][$type]) {
         $userType = new \StdClass();
-        $userType->tipo = $tinySettings['roles'][$type];
+        $userType->tipo = $tinySettings['profiles'][$type];
         $contact->tipos_contato[] = $userType;
       }
     }
