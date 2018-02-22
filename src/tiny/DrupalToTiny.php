@@ -34,9 +34,14 @@ class DrupalToTiny
     $contact = new \StdClass();
     $contact->sequencia = $account->id();
     $contact->codigo = $account->uuid();
-    $contact->nome = $account->address;
     $contact->email = $account->getEmail();
     $contact->situacao = 'A';
+
+    foreach ($tinySettings['profile_fields']['address'] as $key => $fields) {
+        foreach ($fields as $field) {
+            $contact->$key .= $account->address->list[0]->values[$field] . ' ';
+        }
+    }
 
     foreach ($tinySettings['profile_fields'] as $fieldName => $field) {
       if ($account->get($fieldName)->value != "") {
