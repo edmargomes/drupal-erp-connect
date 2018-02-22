@@ -30,11 +30,15 @@ class DrupalToTiny
     }
   }
 
+  public static function orderToOrderTiny($order, $tinySettings) {
+
+  }
+
+
   public static function userToContactTiny($account, $tinySettings) {
     $contact = new \StdClass();
     $contact->sequencia = $account->id();
     $contact->codigo = $account->uuid();
-    $contact->email = $account->getEmail();
     $contact->situacao = 'A';
 
     foreach ($tinySettings['profile_fields']['address'] as $key => $fields) {

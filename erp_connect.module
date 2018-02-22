@@ -40,14 +40,16 @@ function erp_connect_commerce_order_insert(OrderInterface $order) {
 }
 
 /**
- * Implements hook_commerce_order_insert().
+ * Implements hook_commerce_order_update().
  */
 function erp_connect_commerce_order_update(OrderInterface $order) {
   $tinySettings = Settings::get('tiny');
   $tinyERP = new TinyERPService($tinySettings['token']);
 
-  if($order->getState()->getValue() == 'completed') {
-    
+  if($order->getState()->value == 'completed') {
+      $client = DrupalToTiny::userToContactTiny($order->getBillingProfile(), $tinySettings);
+      $client->email = $order->getEmail();
+      $orderTiny = DrupalToTiny::orderToOrderTiny($order, $tinySettings);
   }
 }
 
