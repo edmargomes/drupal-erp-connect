@@ -12,6 +12,8 @@ use Drupal\Core\Site\Settings;
 use Drupal\commerce_product\Entity\ProductInterface;
 use Drupal\user\UserInterface;
 use Drupal\profile\Entity\ProfileInterface;
+use Drupal\commerce_order\Entity\OrderInterface;
+use Drupal\commerce_checkout\Entity\CheckoutFlowInterface;
 
 /**
  * Implements hook_help().
@@ -29,7 +31,30 @@ function erp_connect_help($route_name, RouteMatchInterface $route_match) {
   }
 }
 
+/**
+ * Implements hook_commerce_order_insert().
+ */
+function erp_connect_commerce_order_insert(OrderInterface $order) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+}
 
+/**
+ * Implements hook_commerce_order_insert().
+ */
+function erp_connect_commerce_order_update(OrderInterface $order) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+
+  if($order->getState()->getValue() == 'completed') {
+    
+  }
+}
+
+function erp_connect_commerce_checkout_update(CheckoutFlowInterface $checkout) {
+  $tinySettings = Settings::get('tiny');
+  $tinyERP = new TinyERPService($tinySettings['token']);
+}
 /**
  * Implements hook_profile_insert().
  */
@@ -37,22 +62,22 @@ function erp_connect_profile_insert(ProfileInterface $profile) {
   $tinySettings = Settings::get('tiny');
   $tinyERP = new TinyERPService($tinySettings['token']);
 
-  $contact = DrupalToTiny::userToContactTiny($profile, $tinySettings);
-
-  $contacts = '{
-    "contatos": [
-    {
-        "contato": ' . json_encode($contact) . '
-    }]
-  }';
-
-  try {
-    $response = $tinyERP->createContact($contacts);
-    DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\profile\Entity\Profile::class);
-  }
-  catch (\Exception $ex) {
-    watchdog_exception('erp_connect',$ex);
-  }
+//  $contact = DrupalToTiny::userToContactTiny($profile, $tinySettings);
+//
+//  $contacts = '{
+//    "contatos": [
+//    {
+//        "contato": ' . json_encode($contact) . '
+//    }]
+//  }';
+//
+//  try {
+//    $response = $tinyERP->createContact($contacts);
+//    DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\profile\Entity\Profile::class);
+//  }
+//  catch (\Exception $ex) {
+//    watchdog_exception('erp_connect',$ex);
+//  }
 }
 
 /**
@@ -61,24 +86,24 @@ function erp_connect_profile_insert(ProfileInterface $profile) {
 function erp_connect_profile_update(ProfileInterface $profile) {
   $tinySettings = Settings::get('tiny');
   $tinyERP = new TinyERPService($tinySettings['token']);
-  $contact = DrupalToTiny::userToContactTiny($profile, $tinySettings);
-
-  $contacts = '{
-    "contatos": [
-    {
-        "contato": ' . json_encode($contact) . '
-    }]
-  }';
-
-  try {
-    $response = $contact->id ? $tinyERP->updateContact($contacts) : $tinyERP->createContact($contacts);
-    if (!$contact->id) {
-      DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\profile\Entity\Profile::class);
-    }
-  }
-  catch (\Exception $ex) {
-    watchdog_exception('erp_connect',$ex);
-  }
+//  $contact = DrupalToTiny::userToContactTiny($profile, $tinySettings);
+//
+//  $contacts = '{
+//    "contatos": [
+//    {
+//        "contato": ' . json_encode($contact) . '
+//    }]
+//  }';
+//
+//  try {
+//    $response = $contact->id ? $tinyERP->updateContact($contacts) : $tinyERP->createContact($contacts);
+//    if (!$contact->id) {
+//      DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\profile\Entity\Profile::class);
+//    }
+//  }
+//  catch (\Exception $ex) {
+//    watchdog_exception('erp_connect',$ex);
+//  }
 }
 /**
  * Implements hook_user_insert user().
