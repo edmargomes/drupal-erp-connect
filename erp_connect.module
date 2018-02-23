@@ -32,31 +32,28 @@ function erp_connect_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_commerce_order_insert().
- */
-function erp_connect_commerce_order_insert(OrderInterface $order) {
-  $tinySettings = Settings::get('tiny');
-  $tinyERP = new TinyERPService($tinySettings['token']);
-}
-
-/**
  * Implements hook_commerce_order_update().
  */
 function erp_connect_commerce_order_update(OrderInterface $order) {
   $tinySettings = Settings::get('tiny');
   $tinyERP = new TinyERPService($tinySettings['token']);
 
-  if($order->getState()->value == 'completed') {
-      $client = DrupalToTiny::userToContactTiny($order->getBillingProfile(), $tinySettings);
-      $client->email = $order->getEmail();
-      $orderTiny = DrupalToTiny::orderToOrderTiny($order, $tinySettings);
+  if ($order->getState()->value == 'completed') {
+    $client = DrupalToTiny::userToContactTiny($order->getBillingProfile(), $tinySettings);
+    $client->email = $order->getEmail();
+    $orderTiny = DrupalToTiny::orderToOrderTiny($order, $tinySettings);
+    $orderTiny->cliente = $client;
+
+    try {
+      $response = $tinyERP->createOrder($orderTiny);
+      //DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\profile\Entity\Profile::class);
+    }
+    catch (\Exception $ex) {
+      watchdog_exception('erp_connect',$ex);
+    }
   }
 }
 
-function erp_connect_commerce_checkout_update(CheckoutFlowInterface $checkout) {
-  $tinySettings = Settings::get('tiny');
-  $tinyERP = new TinyERPService($tinySettings['token']);
-}
 /**
  * Implements hook_profile_insert().
  */

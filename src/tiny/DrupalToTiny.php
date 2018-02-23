@@ -31,7 +31,8 @@ class DrupalToTiny
   }
 
   public static function orderToOrderTiny($order, $tinySettings) {
-
+    $tinyOrder = new \StdClass();
+    return $tinyOrder;
   }
 
 
@@ -48,21 +49,17 @@ class DrupalToTiny
     }
 
     foreach ($tinySettings['profile_fields'] as $fieldName => $field) {
-      if ($account->get($fieldName)->count() > 0) {
-        $contact->$field = $account->get($fieldName)->value;
-      }
+      if ($fieldName == 'address')
+        continue;
+
+      $contact->$field = $account->get($fieldName)->value;
     }
 
     $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
 
-    $contact->tipos_contato = [];
-    foreach ($account->getRoles() as $key => $type) {
-      if ($tinySettings['roles'][$type]) {
-        $userType = new \StdClass();
-        $userType->tipo = $tinySettings['profiles'][$type];
-        $contact->tipos_contato[] = $userType;
-      }
-    }
+    $userType = new \StdClass();
+    $userType->tipo = $tinySettings['profiles'][$account->bundle()];
+    $contact->tipos_contato = [$userType];
 
     $tinyId = $account->get($tinySettings['erp_id']);
     if ($tinyId && $tinyId->value != "")

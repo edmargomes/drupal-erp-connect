@@ -15,6 +15,7 @@ class TinyERPService {
   const CONTACT_UPDATE_URL = 'https://api.tiny.com.br/api2/contato.alterar.php';
   const PRODUCT_CREATE_URL = 'https://api.tiny.com.br/api2/produto.incluir.php';
   const PRODUCT_UPDATE_URL = 'https://api.tiny.com.br/api2/produto.alterar.php';
+  const ORDER_CREATE_URL = 'https://api.tiny.com.br/api2/pedido.incluir.php';
 
   public function __construct($token) {
     $this->token = $token;
@@ -102,6 +103,12 @@ class TinyERPService {
     return $this->callApi(self::CONTACT_UPDATE_URL, $data);
   }
 
+  public function createOrder($order) {
+
+    $data = "token=$this->token&pedido=$order&formato=JSON";
+
+    return $this->callApi(self::ORDER_CREATE_URL, $data);
+  }
 
   /**
    * Create product in the Tiny ERP
