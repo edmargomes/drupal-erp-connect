@@ -43,12 +43,12 @@ class DrupalToTiny
 
     foreach ($tinySettings['profile_fields']['address'] as $key => $fields) {
         foreach ($fields as $field) {
-            $contact->$key .= $account->address->list[0]->values[$field] . ' ';
+            $contact->$key .= $account->address[0]->$field . ' ';
         }
     }
 
     foreach ($tinySettings['profile_fields'] as $fieldName => $field) {
-      if ($account->get($fieldName)->value != "") {
+      if ($account->get($fieldName)->count() > 0) {
         $contact->$field = $account->get($fieldName)->value;
       }
     }
