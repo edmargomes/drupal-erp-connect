@@ -1,10 +1,10 @@
 # drupal-erp-connect
 ERPs Integration for Drupal 8 commerce, starting with Tiny ERP
 
-## Setup
+## Setup for Drupal Commerce (required)
 1 - Clone this repository with folder's name erp_connect in your modules folder.
 
-2 - Added your tiny token in settings file and 
+2 - Add your tiny token in settings file and 
 field to use to save tiny id information for your entities. If you haven't tiny_id field, you need create like integer and add in the user profile and variations products.
 ```
 $settings['tiny'] = [
@@ -13,7 +13,22 @@ $settings['tiny'] = [
 ];
 ```
 
-3 - Add from-to table settings to get field user profile value and send to TinyERP: 
+3 - Add order fields to send to TinyERP
+
+```
+$settings['tiny'] = [
+  'token' => 'your_token',
+  'erp_id' => 'field_tiny_id',
+];
+```
+
+4 - Add profile fields to sent to TinyERP
+
+5 - Add from-to table settings to get profile type and send to TinyERP like contact type: 
+`'profile_type' => 'tiny_user_type'`
+
+## Setup to work with register user (optional)
+1 - Add from-to table settings to get field user value and send to TinyERP (optional): 
 `'drupal-field' => 'tiny-field'`
 
 Example
