@@ -19,13 +19,94 @@ $settings['tiny'] = [
 $settings['tiny'] = [
   'token' => 'your_token',
   'erp_id' => 'field_tiny_id',
+  'order_fields' => [
+    'items_fields' => [
+      'descricao' => ['body'],
+    ]
+  ],
 ];
 ```
 
-4 - Add profile fields to sent to TinyERP
+4 - Add profile fields to sent to TinyERP, address is required and works like this:
 
-5 - Add from-to table settings to get profile type and send to TinyERP like contact type: 
+`'tiny_field_name' => ['field_1', 'field_2']`
+
+Example:
+```php
+$settings['tiny'] = [
+  'token' => 'd2d97cdb5ba38db662abb5741cac52f6ac05265f',
+  'erp_id' => 'field_tiny_id',
+  'order_fields' => [
+    'items_fields' => [
+      'descricao' => ['body'],
+    ]
+  ],
+  'profile_fields' => [
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+    'address' => [
+      'nome' => ['given_name', 'family_name'],
+    ],
+  ],
+];
+```
+
+5 - Add from-to table settings to get profile type and send to TinyERP like contact type:
+ 
 `'profile_type' => 'tiny_user_type'`
+
+Example:
+```php
+$settings['tiny'] = [
+  'token' => 'd2d97cdb5ba38db662abb5741cac52f6ac05265f',
+  'erp_id' => 'field_tiny_id',
+  'order_fields' => [
+    'items_fields' => [
+      'descricao' => ['body'],
+    ]
+  ],
+  'profile_fields' => [
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+    'address' => [
+      'nome' => ['given_name', 'family_name'],
+    ],
+  ],
+  'profiles' => [
+    'customer' => 'Cliente',
+    'provider' => 'Fornecedor',
+  ],
+];
+```
+6 - Add from-to table settings to get field product value and send to TinyERP
+`'drupal-field' => 'tiny-field'`
+
+Example:
+```php
+$settings['tiny'] = [
+  'token' => 'd2d97cdb5ba38db662abb5741cac52f6ac05265f',
+  'erp_id' => 'field_tiny_id',
+  'order_fields' => [
+    'items_fields' => [
+      'descricao' => ['body'],
+    ]
+  ],
+  'profile_fields' => [
+    'field_cnpj' => 'cpf_cnpj',
+    'field_cpf' => 'cpf_cnpj',
+    'address' => [
+      'nome' => ['given_name', 'family_name'],
+    ],
+  ],
+  'profiles' => [
+    'customer' => 'Cliente',
+    'provider' => 'Fornecedor',
+  ],
+  'product_fields' => [
+    'body' => 'descricao_complementar',
+  ],
+];
+```
 
 ## Setup to work with register user (optional)
 1 - Add from-to table settings to get field user value and send to TinyERP (optional): 
@@ -44,14 +125,13 @@ $settings['tiny'] = [
 ```
 Tiny fields reference: https://erp.tiny.com.br/help?p=api2-contatos-incluir
 
-4 - Add from-to table settings to get roles value and send to TinyERP like contact type: 
+2 - Add from-to table settings to get roles value and send to TinyERP like contact type: 
 `'drupal-role' => 'tiny-type'`
 
 Example
 ```
 $settings['tiny'] = [
-  'token' => 'your_token',
-  'erp_id' => 'field_tiny_id',
+  ...
   'user_fields' => [
     'field_cnpj' => 'cpf_cnpj',
     'field_cpf' => 'cpf_cnpj',
@@ -60,30 +140,6 @@ $settings['tiny'] = [
     'client' => 'Cliente',
     'provider' => 'Fornecedor',
   ]
-];
-
-```
-
-5 - Add from-to table settings to get field product value and send to TinyERP
-`'drupal-field' => 'tiny-field'`
-
-Example
-```
-$settings['tiny'] = [
-  'token' => 'your_token',
-  'erp_id' => 'field_tiny_id',
-  'user_fields' => [
-    'field_cnpj' => 'cpf_cnpj',
-    'field_cpf' => 'cpf_cnpj',
-  ],
-  'roles' => [
-    'client' => 'Cliente',
-    'provider' => 'Fornecedor',
-  ],
-  'product_fields' => [
-    'body' => 'descricao_complementar',
-    'field_EAN' => 'gtin',
-  ],
 ];
 
 ```
