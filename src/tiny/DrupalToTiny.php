@@ -32,6 +32,8 @@ class DrupalToTiny
 
   public static function orderToOrderTiny($order, $tinySettings) {
     $tinyOrder = new \StdClass();
+    $tinyOrder->data_pedido = 'aa/ff/ff';
+    $tinyOrder->situacao = 'faturado';
     return $tinyOrder;
   }
 
@@ -40,11 +42,43 @@ class DrupalToTiny
     $contact = new \StdClass();
     $contact->sequencia = $account->id();
     $contact->codigo = $account->uuid();
+    $contact->nome = $account->getAccountName();
+    $contact->email = $account->getEmail();
+    $contact->situacao = 'A';
+
+    foreach ($tinySettings['user_fields'] as $fieldName => $field) {
+      if ($account->get($fieldName)->value != "") {
+        $contact->$field = $account->get($fieldName)->value;
+      }
+    }
+
+    $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
+
+    $contact->tipos_contato = [];
+    foreach ($account->getRoles() as $key => $type) {
+      if ($tinySettings['roles'][$type]) {
+        $userType = new \StdClass();
+        $userType->tipo = $tinySettings['roles'][$type];
+        $contact->tipos_contato[] = $userType;
+      }
+    }
+
+    $tinyId = $account->get($tinySettings['erp_id']);
+    if ($tinyId && $tinyId->value != "")
+      $contact->id = $tinyId->value;
+
+    return $contact;
+  }
+
+  public static function profileToContactTiny($profile, $tinySettings) {
+    $contact = new \StdClass();
+    $contact->sequencia = $profile->id();
+    $contact->codigo = $profile->uuid();
     $contact->situacao = 'A';
 
     foreach ($tinySettings['profile_fields']['address'] as $key => $fields) {
         foreach ($fields as $field) {
-            $contact->$key .= $account->address[0]->$field . ' ';
+            $contact->$key .= $profile->address[0]->$field . ' ';
         }
     }
 
@@ -52,16 +86,17 @@ class DrupalToTiny
       if ($fieldName == 'address')
         continue;
 
-      $contact->$field = $account->get($fieldName)->value;
+      $contact->$field = $profile->get($fieldName)->value;
     }
 
     $contact->tipo_pessoa = strlen($contact->cpf_cnpj) == 11 ? 'F' : 'J';
 
     $userType = new \StdClass();
-    $userType->tipo = $tinySettings['profiles'][$account->bundle()];
+    $userType->tipo = $tinySettings['profiles'][$profile->bundle()];
     $contact->tipos_contato = [$userType];
+    $contact->atualizar_cliente = 'S';
 
-    $tinyId = $account->get($tinySettings['erp_id']);
+    $tinyId = $profile->get($tinySettings['erp_id']);
     if ($tinyId && $tinyId->value != "")
       $contact->id = $tinyId->value;
 
