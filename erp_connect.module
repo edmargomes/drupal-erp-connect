@@ -37,13 +37,14 @@ function erp_connect_commerce_order_update(OrderInterface $order) {
   $tinyERP = new TinyERPService($tinySettings['token']);
 
   if ($order->getState()->value == 'completed') {
+    $orderTiny = new \StdClass();
     $client = DrupalToTiny::profileToContactTiny($order->getBillingProfile(), $tinySettings);
     $client->email = $order->getEmail();
-    $orderTiny = DrupalToTiny::orderToOrderTiny($order, $tinySettings);
-    $orderTiny->cliente = $client;
+    $orderTiny->pedido = DrupalToTiny::orderToOrderTiny($order, $tinySettings);
+    $orderTiny->pedido->cliente = $client;
 
     try {
-      $response = $tinyERP->createOrder($orderTiny);
+      $response = $tinyERP->createOrder(json_encode($orderTiny));
       DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_order\Entity\Order::class);
     }
     catch (\Exception $ex) {

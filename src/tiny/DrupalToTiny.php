@@ -8,6 +8,9 @@
 
 namespace Drupal\erp_connect\tiny;
 
+use Drupal\commerce_price\Price;
+use Drupal\Core\Datetime\Entity\DateFormat;
+
 class DrupalToTiny
 {
 
@@ -32,8 +35,24 @@ class DrupalToTiny
 
   public static function orderToOrderTiny($order, $tinySettings) {
     $tinyOrder = new \StdClass();
-    $tinyOrder->data_pedido = 'aa/ff/ff';
+    $date_formatter = \Drupal::service('date.formatter');
+    $tinyOrder->data_pedido = $date_formatter->format($order->getCreatedTime(), 'custom', 'd/m/Y');
     $tinyOrder->situacao = 'faturado';
+    $tinyOrder->itens = [];
+    foreach ($order->getItems() as $item) {
+      $itemTiny = new \StdClass();
+      $itemTiny->item = new \StdClass();
+      $itemTiny->item->quantidade = $item->getQuantity();
+      $itemTiny->item->unidade = 'Pç';
+      $itemTiny->item->valor_unitario = $item->getUnitPrice()->getNumber();
+      $itemTiny->item->codigo = $item->getPurchasedEntity()->uuid();
+      foreach ($tinySettings['order_fields']['items_fields'] as $key => $fields) {
+        foreach ($fields as $field) {
+          $itemTiny->item->$key .= $item->getPurchasedEntity()->getProduct()->get($field)->value . ' ';
+        }
+      }
+      $tinyOrder->itens[] = $itemTiny;
+    }
     return $tinyOrder;
   }
 
@@ -77,9 +96,9 @@ class DrupalToTiny
     $contact->situacao = 'A';
 
     foreach ($tinySettings['profile_fields']['address'] as $key => $fields) {
-        foreach ($fields as $field) {
-            $contact->$key .= $profile->address[0]->$field . ' ';
-        }
+      foreach ($fields as $field) {
+        $contact->$key .= $profile->address[0]->$field . ' ';
+      }
     }
 
     foreach ($tinySettings['profile_fields'] as $fieldName => $field) {
