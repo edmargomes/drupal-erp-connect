@@ -46,7 +46,7 @@ function erp_connect_commerce_order_update(OrderInterface $order) {
     try {
       Drupal::logger('erp_connect')->notice(json_encode($orderTiny));
       $response = $tinyERP->createOrder(json_encode($orderTiny));
-      Drupal::logger('erp_connect')->notice(json_encode($response));
+      Drupal::logger('erp_connect')->notice($response);
       DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_order\Entity\Order::class);
     }
     catch (\Exception $ex) {
@@ -135,7 +135,7 @@ function erp_connect_commerce_product_insert(ProductInterface $product) {
     if (count($products->produtos)) {
       Drupal::logger('erp_connect')->notice(json_encode($products));
       $response = $tinyERP->createProduct(json_encode($products));
-      Drupal::logger('erp_connect')->notice(json_encode($response));
+      Drupal::logger('erp_connect')->notice($response);
       DrupalToTiny::addTinyIdInEntity($response, $tinySettings, \Drupal\commerce_product\Entity\ProductVariation::class);
     }
   }
